@@ -65,6 +65,8 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
