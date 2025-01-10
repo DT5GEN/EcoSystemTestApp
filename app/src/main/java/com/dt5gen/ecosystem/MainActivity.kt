@@ -24,14 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dt5gen.ecosystem.domain.models.BinInfoResponse
 import com.dt5gen.ecosystem.presentation.bin.BinViewModel
 import com.dt5gen.ecosystem.ui.theme.EcoSystemTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @AndroidEntryPoint
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +36,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             EcoSystemTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Заменяем Greeting на BinScreen
                     BinScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -49,13 +45,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun BinScreen(
-    modifier: Modifier = Modifier,
-    viewModel: BinViewModel = hiltViewModel()
+    viewModel: BinViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
 ) {
-    val binInfo by viewModel.binInfo.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
+    val binInfo = viewModel.binInfo.collectAsState().value
+    val errorMessage = viewModel.errorMessage.collectAsState().value
 
     Column(
         modifier = modifier
@@ -63,34 +60,51 @@ fun BinScreen(
             .padding(16.dp)
     ) {
         var binInput by remember { mutableStateOf("") }
+        val maxLength = 16
 
+        // Поле ввода BIN
         TextField(
             value = binInput,
-            onValueChange = { binInput = it },
-            label = { Text("Введите BIN") },
+            onValueChange = { input ->
+                if (input.length <= maxLength && input.all { it.isDigit() }) {
+                    binInput = input
+                }
+            },
+            label = { Text("Введите BIN (6-16 цифр)") },
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Кнопка поиска
         Button(
-            onClick = { viewModel.fetchBinInfo(binInput) },
+            onClick = {
+                if (binInput.length >= 6) {
+                    viewModel.fetchBinInfo(binInput.take(6)) // Берём только первые 6 цифр
+                } else {
+                    viewModel.setError("Введите минимум 6 цифр!")
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 16.dp),
+            enabled = binInput.length >= 6 // Включаем кнопку только при достаточной длине ввода
         ) {
             Text("Поиск")
         }
 
-        binInfo?.let { info: BinInfoResponse ->
-            Text(text = "Страна: ${info.country?.name}")
-            Text(text = "Банк: ${info.bank?.name}")
-            Text(text = "Телефон: ${info.bank?.phone}")
+        // Отображение результата
+        binInfo?.let { info ->
+            Text(text = "Страна: ${info.country?.name ?: "N/A"}")
+            Text(text = "Банк: ${info.bank?.name ?: "N/A"}")
+            Text(text = "Телефон: ${info.bank?.phone ?: "N/A"}")
         }
 
+        // Отображение ошибки
         errorMessage?.let { error ->
             Text(text = "Ошибка: $error", color = Color.Red)
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

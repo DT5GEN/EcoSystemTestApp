@@ -30,4 +30,9 @@ class BinViewModel @Inject constructor(
             }
         }
     }
+
+    fun setError(message: String) {
+        _errorMessage.value = message
+    }
 }
+
