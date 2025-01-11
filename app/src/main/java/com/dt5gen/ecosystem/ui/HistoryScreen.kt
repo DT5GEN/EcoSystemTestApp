@@ -18,14 +18,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dt5gen.ecosystem.presentation.bin.BinViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun HistoryScreen(viewModel: BinViewModel, onBackClick: () -> Unit, onClearHistory: () -> Unit) {
+fun HistoryScreen(
+    viewModel: BinViewModel,
+    onBackClick: () -> Unit,
+    onClearHistory: () -> Unit,
+    onNavigateToMain: () -> Unit
+) {
     val history by viewModel.history.collectAsState()
+    var isMessageVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -37,7 +52,14 @@ fun HistoryScreen(viewModel: BinViewModel, onBackClick: () -> Unit, onClearHisto
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    onClick = { onClearHistory() },
+                    onClick = {
+                        onClearHistory()
+                        isMessageVisible = true
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(1200)
+                            onNavigateToMain() // Переход на главный экран через 1,2 сек
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Очистить историю")
@@ -80,9 +102,23 @@ fun HistoryScreen(viewModel: BinViewModel, onBackClick: () -> Unit, onClearHisto
                             Text("Банк: ${item.bankName ?: "N/A"}")
                             Text("Город: ${item.bankCity ?: "N/A"}")
                             Text("Телефон: ${item.bankPhone ?: "N/A"}")
-                            Text("сайт: ${item.bankUrl ?: "N/A"}")
+                            Text("Cайт: ${item.bankUrl ?: "N/A"}")
                         }
                     }
+                }
+            }
+            if (isMessageVisible) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "История запросов очищена",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 24.sp
+                    )
                 }
             }
         }

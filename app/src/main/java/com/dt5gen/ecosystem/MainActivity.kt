@@ -41,7 +41,12 @@ class MainActivity : ComponentActivity() {
                                 navController.popBackStack()
                             },
                             onClearHistory = {
-                                viewModel.clearHistory() // Убедитесь, что эта функция существует в ViewModel
+                                viewModel.clearHistory()
+                            },
+                            onNavigateToMain = {
+                                navController.navigate(route = "main_screen") {
+                                    popUpTo("main_screen") { inclusive = true }
+                                }
                             }
                         )
                     }

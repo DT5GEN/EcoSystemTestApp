@@ -25,7 +25,12 @@ fun NavigationGraph(
             HistoryScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.popBackStack() },
-                onClearHistory = { viewModel.clearHistory() } // Здесь передаем логику очистки
+                onClearHistory = { viewModel.clearHistory() },
+                onNavigateToMain = {
+                    navController.navigate("main_screen") {
+                        popUpTo("history_screen") { inclusive = true }
+                    }
+                }
             )
         }
     }
