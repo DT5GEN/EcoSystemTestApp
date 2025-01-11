@@ -22,7 +22,7 @@ fun MainScreen(
     onNavigateToHistory: () -> Unit
 ) {
     val binInfoState by viewModel.binInfo.collectAsState()
-   // val binInput = remember { mutableStateOf("") }
+    // val binInput = remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
