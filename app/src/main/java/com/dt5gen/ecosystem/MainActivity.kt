@@ -3,45 +3,56 @@ package com.dt5gen.ecosystem
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.dt5gen.ecosystem.presentation.bin.BinViewModel
+import com.dt5gen.ecosystem.ui.HistoryScreen
+import com.dt5gen.ecosystem.ui.MainScreen
 import com.dt5gen.ecosystem.ui.theme.EcoSystemTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             EcoSystemTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Just Test",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                val viewModel: BinViewModel = hiltViewModel()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "main_screen"
+                ) {
+                    composable(route = "main_screen") {
+                        MainScreen(
+                            viewModel = viewModel,
+                            onNavigateToHistory = {
+                                navController.navigate(route = "history_screen")
+                            }
+                        )
+                    }
+                    composable(route = "history_screen") {
+                        HistoryScreen(
+                            viewModel = viewModel,
+                            onBackClick = {
+                                navController.popBackStack()
+                            },
+                            onClearHistory = {
+                                viewModel.clearHistory()
+                            },
+                            onNavigateToMain = {
+                                navController.navigate(route = "main_screen") {
+                                    popUpTo("main_screen") { inclusive = true }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EcoSystemTheme {
-        Greeting("Android")
-    }
-}
