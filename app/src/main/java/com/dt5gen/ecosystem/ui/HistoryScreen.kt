@@ -59,7 +59,7 @@ fun HistoryScreen(viewModel: BinViewModel, onBackClick: () -> Unit, onClearHisto
             Text(
                 text = "История запросов",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 64.dp, vertical = 8.dp)
             )
             LazyColumn(
                 modifier = Modifier.weight(1f),
@@ -74,8 +74,13 @@ fun HistoryScreen(viewModel: BinViewModel, onBackClick: () -> Unit, onClearHisto
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text("BIN: ${item.bin}")
+                            Text("Тип карты: ${item.type ?: "N/A"}")
+                            Text("Платёжная система: ${item.brand ?: "N/A"}")
                             Text("Страна: ${item.countryName ?: "N/A"}")
                             Text("Банк: ${item.bankName ?: "N/A"}")
+                            Text("Город: ${item.bankCity ?: "N/A"}")
+                            Text("Телефон: ${item.bankPhone ?: "N/A"}")
+                            Text("сайт: ${item.bankUrl ?: "N/A"}")
                         }
                     }
                 }

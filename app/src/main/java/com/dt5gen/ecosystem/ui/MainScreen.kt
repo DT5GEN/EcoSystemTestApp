@@ -1,6 +1,7 @@
 package com.dt5gen.ecosystem.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -11,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.dt5gen.ecosystem.presentation.bin.BinViewModel
 
@@ -31,8 +33,13 @@ fun MainScreen(
         var binInput by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
             value = binInput,
-            onValueChange = { binInput = it },
+            onValueChange = { input ->
+                if (input.length <= 16) { // Ограничиваем количество символов
+                    binInput = input
+                }
+            },
             label = { Text("Введите BIN (6-16 цифр)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
