@@ -1,5 +1,6 @@
 package com.dt5gen.ecosystem.presentation.bin
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dt5gen.ecosystem.domain.models.BinHistoryItem
@@ -50,6 +51,31 @@ class BinViewModel @Inject constructor(
                     val response = repository.getBinInfo(bin)
                     // код обработки успешного ответа
                     _binInfo.value = response
+
+                    Log.d("History", history.value.toString())
+
+                    _history.value = listOf(
+                        BinHistoryItem(
+                            bin = bin,
+                            numberLength = response.number?.length,
+                            luhn = response.number?.luhn,
+                            scheme = response.scheme,
+                            type = response.type,
+                            brand = response.brand,
+                            prepaid = response.prepaid,
+                            countryName = response.country?.name,
+                            countryAlpha2 = response.country?.alpha2,
+                            countryEmoji = response.country?.emoji,
+                            currency = response.country?.currency,
+                            latitude = response.country?.latitude,
+                            longitude = response.country?.longitude,
+                            bankName = response.bank?.name,
+                            bankUrl = response.bank?.url,
+                            bankPhone = response.bank?.phone,
+                            bankCity = response.bank?.city
+                        )
+                    ) + _history.value
+
                 } catch (e: Exception) {
                     _errorState.emit("Ошибка загрузки данных: ${e.message}")
                 }
