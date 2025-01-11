@@ -1,10 +1,8 @@
-package com.dt5gen.ecosystem.domain.repository
+package com.dt5gen.ecosystem.data.repository
 
 import com.dt5gen.ecosystem.domain.models.BinHistoryItem
-import com.dt5gen.ecosystem.domain.models.BinInfoResponse
 
-interface BinRepository {
-    suspend fun getBinInfo(bin: String): BinInfoResponse
+interface LocalBinRepository {
     suspend fun saveHistoryItem(item: BinHistoryItem)
     suspend fun getHistory(): List<BinHistoryItem>
     suspend fun clearHistory()
