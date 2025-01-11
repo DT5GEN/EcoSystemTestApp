@@ -1,6 +1,5 @@
 package com.dt5gen.ecosystem.data.local
 
-
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.dt5gen.ecosystem.domain.models.BinHistoryItem

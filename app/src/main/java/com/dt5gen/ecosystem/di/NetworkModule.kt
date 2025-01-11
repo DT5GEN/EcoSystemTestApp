@@ -41,7 +41,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLocalDataSource(binHistoryDao: BinHistoryDao): LocalBinRepository {
-        return LocalDataSource(binHistoryDao) // LocalDataSource реализует LocalBinRepository
+        return LocalDataSource(binHistoryDao)
     }
 
     @Provides

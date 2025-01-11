@@ -45,7 +45,7 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(24.dp)
     ) {
         var binInput by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
@@ -90,6 +90,7 @@ fun MainScreen(
         ResultCard(info = binInfoResponse, errorMessage = errorMessage)
     }
 }
+
 
 
 @Composable
